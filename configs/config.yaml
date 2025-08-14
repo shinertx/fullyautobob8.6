@@ -1,6 +1,6 @@
 system:
   loop_interval_seconds: 90
-  log_level: "DEBUG"
+  log_level: "INFO"
   redis_host: "localhost"
   redis_port: 6380
   seed: 1337
@@ -16,12 +16,12 @@ harvester_universe:
 
 screener:
   snapshot_dir: "data/screener_snapshots"
-  min_24h_volume_usd: 0
-  min_price: 0.0
+  min_24h_volume_usd: 10000000
+  min_price: 0.20
   max_markets: 24
   typical_order_usd: 200
-  max_spread_bps: 10000
-  max_impact_bps: 10000
+  max_spread_bps: 25
+  max_impact_bps: 60
   stablecoin_parity_warn_bps: 100
   derivatives_enabled: false  # keep off by default; flip true only when confident
   sentiment_weight: 0.0       # 0 disables ranking boost; try 0.05–0.10 to enable

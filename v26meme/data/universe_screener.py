@@ -12,10 +12,8 @@ def _spread_bps(t: dict) -> float:
     return 10000.0 * (ask - bid) / mid if mid > 0 else float('inf')
 
 def _impact_bps(ex, market_id: str, notional_usd: float, usd_per_quote: float) -> float:
-    logger.debug(f"Checking impact for {market_id} on {ex.id}")
     try:
         ob = ex.fetch_order_book(market_id, limit=10)
-        logger.debug(f"Order book for {market_id}: {ob}")
     except Exception as e:
         logger.warning(f"Could not fetch order book for {market_id} on {ex.id}: {e}")
         return float('inf')
