@@ -1,0 +1,6 @@
+[project]
+name = "v26meme"
+version = "4.7.3"
+description = "v26meme v4.7.3: Extreme iteration + causal probing + adaptive risk. Paper-first, live-ready."
+requires-python = ">=3.10"
+dependencies = []

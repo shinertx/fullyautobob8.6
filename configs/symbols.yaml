@@ -7,5 +7,5 @@ LINK_USD_SPOT: {coinbase: "LINK/USD", kraken: "LINK/USD"}
 ADA_USD_SPOT:  {coinbase: "ADA/USD",  kraken: "ADA/USD"}
 XRP_USD_SPOT:  {coinbase: "XRP/USD",  kraken: "XRP/USD"}
 DOGE_USD_SPOT: {coinbase: "DOGE/USD", kraken: "DOGE/USD"}
-MATIC_USD_SPOT:{coinbase: "MATIC/USD",kraken: "MATIC/USD"}
+MATIC_USD_SPOT: {coinbase: "MATIC/USD", kraken: "MATIC/USD"}
 DOT_USD_SPOT:  {coinbase: "DOT/USD",  kraken: "DOT/USD"}
