@@ -1,120 +1,176 @@
-system:
-  loop_interval_seconds: 90
-  log_level: "INFO"
-  redis_host: "localhost"
-  redis_port: 6380
-  seed: 1337
-
+adaptive:
+  daily_stop_pct_ceiling: 0.2
+  daily_stop_pct_floor: 0.05
+  enabled: true
+  population_size_max: 240
+  population_size_min: 120
+  screener_max_markets_max: 36
+  screener_max_markets_min: 12
+  stop_vol_window_bars: 24
 data_source:
-  # CEX by default; DEX connectors optional if ccxt provides them (graceful if not).
-  exchanges: ["coinbase", "kraken"]
-
-harvester_universe:
-  symbols: ["BTC_USD_SPOT","ETH_USD_SPOT","SOL_USD_SPOT","AVAX_USD_SPOT","LINK_USD_SPOT","ADA_USD_SPOT","XRP_USD_SPOT","DOGE_USD_SPOT","MATIC_USD_SPOT","DOT_USD_SPOT"]
-  timeframe: "1h"
-  initial_harvest_days: 365  # 1-year bootstrap; override with BOOTSTRAP_HARVEST_DAYS
-
-screener:
-  snapshot_dir: "data/screener_snapshots"
-  min_24h_volume_usd: 10000000
-  min_price: 0.20
-  max_markets: 24
-  typical_order_usd: 200
-  max_spread_bps: 25
-  max_impact_bps: 60
-  stablecoin_parity_warn_bps: 100
-  derivatives_enabled: false  # keep off by default; flip true only when confident
-  sentiment_weight: 0.0       # 0 disables ranking boost; try 0.05–0.10 to enable
-
+  exchanges:
+  - coinbase
+  - kraken
+discovery:
+  cv_embargo_bars: 2
+  cv_folds: 4
+  fdr_alpha: 0.1
+  generations_per_cycle: 2
+  max_promotions_per_cycle: 3
+  panel_symbols: 5
+  population_size: 160
+  promotion_criteria:
+    max_mdd: 0.2
+    min_sharpe: 1.1
+    min_sortino: 1.25
+    min_trades: 75
+    min_win_rate: 0.52
+eil:
+  base_feature_norm_lookback: 200
+  cap_new_promotions_per_cycle: 5
+  crossover_rate: 0.3
+  cv_embargo_bars: 1
+  cv_folds: 3
+  cycle_seconds: 300
+  enabled: true
+  fast_window_days: 30
+  fdr_alpha: 0.1
+  jitter_pct: 0.15
+  jitter_repeats: 5
+  kb_path: data/kb/eil
+  llm:
+    enabled: true
+    hard_json: true
+    suggestions_per_cycle: 8
+    temperature: 0.3
+  max_cpu_utilization: 0.9
+  max_depth: 2
+  max_parallel_jobs: 16
+  max_queue: 8000
+  mode: fast_learn
+  mutation_rate: 0.35
+  mutations_per_parent: 3
+  persist_best_only: true
+  population_size: 240
+  promote_if:
+    max_mdd: 0.25
+    max_pvalue: 0.15
+    min_sharpe: 0.9
+    min_sortino: 1.0
+    min_trades: 40
+    min_win_rate: 0.51
+  retire_if:
+    oos_decay_pct: 0.4
+    rolling_dd_pct: 0.3
+  shadow_probe:
+    enabled: false
+    pseudo_notional_usd: 5.0
+  survivor_top_k: 25
+  universe_sample: 16
+  write_panel_summaries: false
+execution:
+  mode: paper
+  paper_fees_bps: 18
+  paper_slippage_bps: 5
+  primary_exchange: coinbase
 feeds:
   cryptopanic:
     enabled: false
-    window_hours: 6
     min_score: -1.0
+    window_hours: 6
   onchain:
     enabled: false
-    provider: "etherscan"
-    min_notional_eth: 100.0  # large transfer threshold for "whale flow" rate
+    min_notional_eth: 100.0
+    provider: etherscan
   orderflow:
-    enabled: false           # Market-Mechanics Pack (live features) OFF by default
+    enabled: false
     top_levels: 5
-
-discovery:
-  population_size: 160
-  generations_per_cycle: 2
-  panel_symbols: 5
-  cv_folds: 4
-  cv_embargo_bars: 2
-  fdr_alpha: 0.10
-  max_promotions_per_cycle: 3
-  promotion_criteria:
-    min_trades: 75
-    min_sortino: 1.25
-    max_mdd: 0.20
-    min_sharpe: 1.10
-    min_win_rate: 0.52
-
-portfolio:
-  max_alpha_concentration: 0.50
-  kelly_fraction: 0.5
-  min_allocation_weight: 0.05
-
-risk:
-  daily_stop_pct: 0.10
-  equity_floor_pct: 0.50
-  max_symbol_weight: 0.35
-  max_gross_weight: 1.00
-  max_order_notional_usd: 150
-  max_consecutive_errors: 3
-  phases:
-    "1000":   { kelly_fraction: 0.6, max_order_notional_usd: 500 }
-    "10000":  { kelly_fraction: 0.7, max_order_notional_usd: 1000 }
-    "100000": { kelly_fraction: 0.8, max_order_notional_usd: 5000 }
-  conserve_mode:
-    dd_trigger_pct: 0.15     # if 1-day drawdown <= -15%
-    gross_weight_scalar: 0.5 # halve gross exposure
-    kelly_scalar: 0.6        # reduce Kelly fraction
-
-execution:
-  primary_exchange: "coinbase"
-  mode: "paper"              # flip to "live" only after verification
-  paper_fees_bps: 18
-  paper_slippage_bps: 5
-
+harvester_universe:
+  include_dynamic: true
+  initial_harvest_days: 365
+  symbols:
+  - ADA_USD_SPOT
+  - AVAX_USD_SPOT
+  - BTC_USD_SPOT
+  - DOGE_USD_SPOT
+  - DOT_USD_SPOT
+  - ENA_USD_SPOT
+  - ETH_USD_SPOT
+  - EUR_USD_SPOT
+  - LINK_USD_SPOT
+  - MATIC_USD_SPOT
+  - SOL_USD_SPOT
+  - SUI_USD_SPOT
+  - USDC_USD_SPOT
+  - USDT_USD_SPOT
+  - XRP_USD_SPOT
+  timeframe: 1h
+  min_history_days: 180        # QC: require at least 180 days coverage to persist
+  max_gap_factor: 1.5          # QC: flag gaps > 1.5x expected bar interval
+  qc_output_dir: data/qc       # QC report output directory
+  per_venue_sidecar: true      # Save SYMBOL__VENUE sidecar parquet for venue-differential features
 llm:
-  provider: "local"          # "local" works out-of-the-box; "openai" optional
   enable: true
   max_suggestions_per_cycle: 3
-
-# --- 4.7.3 new: Extreme Iteration Layer (Hyper-Lab) ---
-eil:
-  enabled: true
-  fast_window_days: 45
-  max_parallel_jobs: 8
-  max_queue: 5000
-  survivor_top_k: 25
-
-# --- 4.7.3 new: Feature-Causal Auto-Prober ---
-prober:
-  enabled: true
-  perturbations: 64
-  delta_fraction: 0.15
-  min_robust_score: 0.55
-
-# --- 4.7.3 new: Micro-Live Sandbox (shadow/probe) ---
+  model: gpt-5
+  provider: openai
+  temperature: 0.2
+  use_responses_api: true
 micro_live:
-  enabled: false             # stays off until you flip it ON
-  notional_usd: 3.00
   cycle_budget_trades: 5
-  venues: ["coinbase", "kraken"]
-
-# --- 4.7.3 new: Adaptive knobs replacing magic numbers ---
-adaptive:
+  enabled: false
+  notional_usd: 3.0
+  venues:
+  - coinbase
+  - kraken
+portfolio:
+  kelly_fraction: 0.5
+  max_alpha_concentration: 0.5
+  min_allocation_weight: 0.05
+prober:
+  delta_fraction: 0.15
   enabled: true
-  stop_vol_window_bars: 24
-  daily_stop_pct_floor: 0.05
-  daily_stop_pct_ceiling: 0.20
-  screener_max_markets_min: 12
-  screener_max_markets_max: 36
-  population_size_min: 120
-  population_size_max: 240
+  min_robust_score: 0.55
+  perturbations: 64
+risk:
+  conserve_mode:
+    dd_trigger_pct: 0.15
+    gross_weight_scalar: 0.5
+    kelly_scalar: 0.6
+  daily_stop_pct: 0.1
+  equity_floor_pct: 0.5
+  max_consecutive_errors: 3
+  max_gross_weight: 1.0
+  max_order_notional_usd: 150
+  max_symbol_weight: 0.35
+  phases:
+    '1000':
+      kelly_fraction: 0.6
+      max_order_notional_usd: 500
+    '10000':
+      kelly_fraction: 0.7
+      max_order_notional_usd: 1000
+    '100000':
+      kelly_fraction: 0.8
+      max_order_notional_usd: 5000
+screener:
+  adaptive_gating_enabled: true
+  derivatives_enabled: false
+  liquidity_score_enabled: true
+  liquidity_score_percentile: 0.25
+  max_impact_bps: 60
+  max_markets: 240
+  max_spread_bps: 25
+  min_24h_volume_usd: 5000000
+  min_price: 0.2
+  regime_aware_gating: true
+  sentiment_weight: 0.0
+  snapshot_dir: data/screener_snapshots
+  stablecoin_parity_warn_bps: 100
+  typical_order_usd: 200
+system:
+  log_level: INFO
+  loop_interval_seconds: 90
+  redis_host: localhost
+  redis_port: 6380
+  seed: 1337

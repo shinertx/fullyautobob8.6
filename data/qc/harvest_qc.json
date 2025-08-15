@@ -1,0 +1,72 @@
+[
+  {
+    "symbol": "ADA_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "AVAX_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "BTC_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "DOGE_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "DOT_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "ETH_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "LINK_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "MATIC_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "SOL_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  },
+  {
+    "symbol": "XRP_USD_SPOT",
+    "rows": 8760,
+    "days_span": 364.9583333333333,
+    "large_gap_count": 0,
+    "large_gap_ratio": 0.0
+  }
+]

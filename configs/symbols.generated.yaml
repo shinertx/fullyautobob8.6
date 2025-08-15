@@ -1,0 +1,42 @@
+ADA_USD_SPOT:
+  coinbase: ADA/USD
+  kraken: ADA/USD
+AVAX_USD_SPOT:
+  coinbase: AVAX/USD
+  kraken: AVAX/USD
+BTC_USD_SPOT:
+  coinbase: BTC/USD
+  kraken: BTC/USD
+DOGE_USD_SPOT:
+  coinbase: DOGE/USD
+  kraken: DOGE/USD
+DOT_USD_SPOT:
+  coinbase: DOT/USD
+  kraken: DOT/USD
+ENA_USD_SPOT:
+  kraken: ENA/USD
+ETH_USD_SPOT:
+  coinbase: ETH/USD
+  kraken: ETH/USD
+EUR_USD_SPOT:
+  kraken: EUR/USD
+FARTCOIN_USD_SPOT:
+  kraken: FARTCOIN/USD
+LINK_USD_SPOT:
+  coinbase: LINK/USD
+  kraken: LINK/USD
+LTC_USD_SPOT:
+  kraken: LTC/USD
+MATIC_USD_SPOT:
+  coinbase: MATIC/USD
+  kraken: MATIC/USD
+SOL_USD_SPOT:
+  coinbase: SOL/USD
+  kraken: SOL/USD
+USDC_USD_SPOT:
+  kraken: USDC/USDT
+USDT_USD_SPOT:
+  kraken: USDT/USD
+XRP_USD_SPOT:
+  coinbase: XRP/USD
+  kraken: XRP/USD

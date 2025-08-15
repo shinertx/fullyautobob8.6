@@ -36,12 +36,16 @@ class SimLab:
         }
 
     def run_backtest(self, df: pd.DataFrame, formula: list) -> dict:
-        if df.empty or len(df) < 60: return {}
+        if df.empty or len(df) < 10: return {}
         df = df.copy()
         df['regime'] = label_regime(df)
         signals = df.apply(lambda row: _evaluate_formula(row, formula), axis=1)
-        edges = signals.diff().fillna(0)
+        edges = signals.astype(int).diff().fillna(0)
+        # Handle initial in-position (signal True on first bar) so we open a trade at start
         in_trade, entry_price = False, 0.0
+        if bool(signals.iloc[0]):
+            in_trade = True
+            entry_price = df['close'].iloc[0] * (1 + self.slippage)
         trades, regimes = [], []
         for i in range(len(df)):
             if edges.iloc[i] > 0 and not in_trade:

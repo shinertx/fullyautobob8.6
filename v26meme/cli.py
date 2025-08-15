@@ -61,7 +61,20 @@ def loop():
 
     state = StateManager(cfg['system']['redis_host'], cfg['system']['redis_port'])
     lakehouse = Lakehouse()
-    screener = UniverseScreener(cfg['data_source']['exchanges'], cfg['screener'], cfg.get('feeds'))
+    screener = UniverseScreener(
+        exchanges=cfg['data_source']['exchanges'],
+        min_24h_volume_usd=cfg['screener']['min_24h_volume_usd'],
+        min_price=cfg['screener']['min_price'],
+        max_markets=cfg['screener']['max_markets'],
+        typical_order_usd=cfg['screener']['typical_order_usd'],
+        max_spread_bps=cfg['screener']['max_spread_bps'],
+        max_impact_bps=cfg['screener']['max_impact_bps'],
+        impact_notional_usd=cfg['screener'].get('impact_notional_usd', 200)
+    )
+    # Inject adaptive/liquidity flags onto instance (backward compatible without changing ctor signature)
+    screener.adaptive_gating_enabled = cfg['screener'].get('adaptive_gating_enabled', True)
+    screener.liquidity_score_enabled = cfg['screener'].get('liquidity_score_enabled', True)
+    screener.liquidity_score_percentile = cfg['screener'].get('liquidity_score_percentile', 0.25)
     store = ScreenerStore(cfg['screener'].get('snapshot_dir', 'data/screener_snapshots'))
     feature_factory = FeatureFactory()
     simlab = SimLab(cfg['execution']['paper_fees_bps'], cfg['execution']['paper_slippage_bps'])

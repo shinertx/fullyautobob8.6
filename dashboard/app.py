@@ -5,7 +5,7 @@ st.set_page_config(page_title="v26meme v4.7.3 Dashboard", layout="wide")
 @st.cache_resource
 def get_redis():
     try:
-        r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+        r = redis.Redis(host='localhost', port=6380, decode_responses=True)
         r.ping(); return r
     except redis.exceptions.ConnectionError as e:
         st.error(f"Redis connection failed: {e}"); return None

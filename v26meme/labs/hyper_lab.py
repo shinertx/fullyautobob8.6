@@ -3,6 +3,7 @@ import click, yaml
 import pandas as pd
 from loguru import logger
 from pathlib import Path
+import os
 
 from v26meme.core.state import StateManager
 from v26meme.data.lakehouse import Lakehouse
@@ -26,7 +27,9 @@ def _parse_tf_bars(tf: str, days: int) -> int:
 def cli(): pass
 
 @cli.command()
-def run():
+@click.option("--once", is_flag=True, help="Run a single EIL cycle and exit.")
+@click.pass_context
+def run(ctx, once: bool = False):
     cfg = load_config()
     if not cfg.get('eil',{}).get('enabled', True):
         logger.info("EIL disabled; exiting.")
@@ -45,8 +48,12 @@ def run():
     gen = GeneticGenerator(base_features, population_size=cfg['discovery']['population_size'], seed=cfg['system'].get('seed', 1337))
 
     tf = cfg['harvester_universe']['timeframe']
-    nbars = _parse_tf_bars(tf, cfg['eil']['fast_window_days'])
+    fast_days = cfg['eil']['fast_window_days']
+    nbars = _parse_tf_bars(tf, fast_days)
+    cycle_seconds = int(os.environ.get("EIL_CYCLE_SECONDS", "30"))
+    tested = 0
 
+    start_time = time.time()
     while True:
         try:
             # sample panel
@@ -71,6 +78,7 @@ def run():
 
             if not gen.population: gen.initialize_population()
 
+            tested = len(gen.population)
             # evaluate quickly
             survivors = []
             for f in gen.population:
@@ -90,12 +98,30 @@ def run():
             # publish to Redis
             for score, fid, form in topk:
                 state.set(f"eil:candidates:{fid}", {"fid": fid, "formula": form, "score": score, "ts": int(time.time())})
-            time.sleep(15)
+                state.r.sadd('eil:seen_hashes', fid)
+            # telemetry
+            state.set("eil:metrics", {"tested": tested, "survivors": len(topk), "ts": int(time.time())})
+
+            # evolve
+            fitness = {fid: score for score, fid, _ in survivors}
+            gen.run_evolution_cycle(fitness)
+
+            if once:
+                logger.info("EIL --once flag set, exiting after one cycle.")
+                break
+
+            elapsed = time.time() - start_time
+            if elapsed < cycle_seconds:
+                time.sleep(cycle_seconds - elapsed)
+            start_time = time.time()
+
         except KeyboardInterrupt:
+            logger.warning("EIL shutdown requested.")
             break
         except Exception as e:
             logger.opt(exception=True).error(f"EIL loop error: {e}")
-            time.sleep(10)
+            time.sleep(cycle_seconds)
+
 
 if __name__ == "__main__":
     cli()

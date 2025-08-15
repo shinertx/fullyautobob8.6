@@ -13,14 +13,23 @@ class PortfolioOptimizer:
 
     def get_weights(self, active_alphas: list, regime: str) -> dict:
         if not active_alphas: return {}
-        usable = [a for a in active_alphas if regime in a['performance'] and a['performance'][regime].get('n_trades',0)>5]
+        # Filter alphas that have performance data for the specified regime
+        usable = [a for a in active_alphas if a.get('performance', {}).get(regime, {}).get('n_trades', 0) > 5]
         if not usable:
+            # Fallback to 'all' regime
             regime = 'all'
-            usable = [a for a in active_alphas if 'all' in a['performance'] and a['performance']['all'].get('n_trades',0)>5]
-        if not usable: return {}
+            usable = [a for a in active_alphas if a.get('performance', {}).get('all', {}).get('n_trades', 0) > 5]
+        if not usable: 
+            # If no alphas have sufficient performance data, return empty weights
+            return {}
 
-        returns_data = {a['id']: a['performance'][regime].get('returns', []) for a in usable}
-        max_len = max(len(v) for v in returns_data.values())
+        returns_data = {a['id']: a.get('performance', {}).get(regime, {}).get('returns', []) for a in usable}
+        max_len = max(len(v) for v in returns_data.values()) if returns_data else 0
+        if max_len == 0:
+            # If no returns data available, return equal weights
+            equal_weight = 1.0 / len(usable)
+            return {a['id']: equal_weight for a in usable}
+        
         for k, v in returns_data.items():
             v.extend([0.0]*(max_len - len(v)))
         df = pd.DataFrame(returns_data)

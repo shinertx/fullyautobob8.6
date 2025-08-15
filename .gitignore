@@ -1,24 +1,83 @@
+# Environment and secrets
 .env
+.env.local
+.env.production
+.env.staging
+
+# Python
 venv/
+.venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .pytest_cache/
 .mypy_cache/
+*.egg-info/
+dist/
+build/
+.tox/
+
+# IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
+
+# Logs and temporary files
 *.log
+logs/*
+!logs/.gitkeep
+*.tmp
+*.temp
+
+# Database files
 *.db
 *.sqlite3
-/data/lakehouse/*
-!/data/lakehouse/.gitkeep
-/data/snapshots/*
-!/data/snapshots/.gitkeep
-/logs/*
-!/logs/.gitkeep
-/notebooks/archive/*
-!/notebooks/archive/.gitkeep
-/EIL_archives/*
-!/EIL_archives/.gitkeep
+*.db-journal
+
+# Data and caches (preserve structure but ignore content)
+data/1h/*.parquet
+data/4h/*.parquet
+data/1d/*.parquet
+data/screener_snapshots/*
+!data/screener_snapshots/.gitkeep
+data/kb/eil/*
+!data/kb/eil/.gitkeep
+data/lakehouse/*
+!data/lakehouse/.gitkeep
+data/snapshots/*
+!data/snapshots/.gitkeep
+
+# EIL and experiment archives
+EIL_archives/*
+!EIL_archives/.gitkeep
+notebooks/archive/*
+!notebooks/archive/.gitkeep
+
+# System files
 *.DS_Store
+Thumbs.db
+.directory
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# Temporary Python files
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+
+# Redis dumps
+dump.rdb
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Local configuration overrides
+config.local.yaml
+settings.local.json
