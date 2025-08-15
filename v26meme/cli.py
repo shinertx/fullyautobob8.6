@@ -91,7 +91,10 @@ def loop():
     exchange_factory = ExchangeFactory(os.environ.get("GCP_PROJECT_ID"))
     risk = RiskManager(state, cfg)
     exec_handler = ExecutionHandler(state, exchange_factory, cfg, risk_manager=risk)
-    proposer = LLMProposer(state)
+    # Initialize LLM proposer only if enabled and provider is not local
+    proposer = None
+    if cfg.get('llm', {}).get('enable', True) and cfg.get('llm', {}).get('provider', 'local') != 'local':
+        proposer = LLMProposer(state)
 
     while True:
         try:
@@ -141,7 +144,7 @@ def loop():
                         state.r.delete(k)
 
             # LLM sidecar suggestions (offline by default)
-            if cfg.get('llm', {}).get('enable', True):
+            if cfg.get('llm', {}).get('enable', True) and proposer is not None:
                 k = int(cfg['llm'].get('max_suggestions_per_cycle', 3))
                 for f in proposer.propose(base_features, k=k):
                     if f not in generator.population:
