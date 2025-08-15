@@ -113,7 +113,7 @@ llm:
   enable: true
   max_suggestions_per_cycle: 3
   model: gpt-5
-  provider: openai
+  provider: local
   temperature: 0.2
   use_responses_api: true
 micro_live:
